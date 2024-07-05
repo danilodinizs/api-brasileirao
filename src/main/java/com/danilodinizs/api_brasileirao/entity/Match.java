@@ -16,10 +16,16 @@ public class Match implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    UUID uuid;
+    UUID matchId;
+    Integer goalsHome;
+    Integer goalsAway;
+    Integer audiencePresent;
+
+    @ManyToOne
+    @JoinColumn(name = "homeClub")
     Club homeClub;
+    @ManyToOne
+    @JoinColumn(name = "awayClub")
     Club awayClub;
-    Integer goalsHClub;
-    Integer goalsAClub;
 
 }

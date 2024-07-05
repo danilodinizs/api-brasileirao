@@ -17,9 +17,14 @@ public class Club implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     UUID clubId;
+    @Column(length = 20)
     String name;
+    @Column(length = 3, name = "short name")
     String acronym;
+    @Column(length = 2)
     String state;
+    @Column(length = 35)
+    String stadium;
 
 
 
