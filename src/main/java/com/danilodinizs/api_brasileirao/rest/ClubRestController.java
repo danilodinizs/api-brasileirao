@@ -13,25 +13,24 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/clubs")
 public class ClubRestController {
 
     @Autowired
     private ClubService clubService;
 
-    @PostMapping
-    public ResponseEntity<Club> saveClub(@PathVariable ClubRecordDto clubRecordDto) {
+    @PostMapping("/clubs")
+    public ResponseEntity<Club> saveClub(@RequestBody ClubRecordDto clubRecordDto) {
         var club = new Club();
         BeanUtils.copyProperties(clubRecordDto, club);
         return ResponseEntity.ok().body(clubService.registerClub(club));
     }
-    @GetMapping
+
+    @GetMapping("/clubs")
     public ResponseEntity<List<Club>> getClubs() {
         return ResponseEntity.ok().body(clubService.listAllClubs());
     }
 
-    @ApiOperation(value = "Club data")
-    @GetMapping(value = "{id}")
+    @GetMapping("/clubs/{id}")
     public ResponseEntity<Object> getClub(@PathVariable(value = "id") UUID id) {
         return ResponseEntity.ok().body(clubService.findClub(id));
     }
