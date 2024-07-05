@@ -14,8 +14,8 @@ public class ClubService {
 
     @Autowired
     private ClubRepository clubRepository;
-    public void registerClub(Club club) {
-        clubRepository.save(club);
+    public Club registerClub(Club club) {
+        return clubRepository.save(club);
     }
 
     public List<Club> listAllClubs() {

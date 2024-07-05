@@ -1,10 +1,10 @@
 package com.danilodinizs.api_brasileirao.rest;
 
+import com.danilodinizs.api_brasileirao.dto.ClubRecordDto;
 import com.danilodinizs.api_brasileirao.entity.Club;
 import com.danilodinizs.api_brasileirao.service.ClubService;
 import io.swagger.annotations.ApiOperation;
-import jakarta.persistence.Column;
-import org.apache.coyote.Response;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +20,10 @@ public class ClubRestController {
     private ClubService clubService;
 
     @PostMapping
-    public ResponseEntity<Void> saveClub(@PathVariable Club club) {
-        clubService.registerClub(club);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Club> saveClub(@PathVariable ClubRecordDto clubRecordDto) {
+        var club = new Club();
+        BeanUtils.copyProperties(clubRecordDto, club);
+        return ResponseEntity.ok().body(clubService.registerClub(club));
     }
     @GetMapping
     public ResponseEntity<List<Club>> getClubs() {

@@ -25,7 +25,8 @@ public class Club implements Serializable {
     String state;
     @Column(length = 35)
     String stadium;
-
+    @Column(length = 5, name = "full name abbreviation")
+    String fullName;
 
 
 }
