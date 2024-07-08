@@ -19,10 +19,15 @@ public class ClubRestController {
     private ClubService clubService;
 
     @PostMapping("/clubs")
-    public ResponseEntity<Club> saveClub(@RequestBody ClubRecordDto clubRecordDto) {
+    public ResponseEntity<Club> saveClub1(@RequestBody ClubRecordDto clubRecordDto) {  // maneira utilizando bean
         var club = new Club();
         BeanUtils.copyProperties(clubRecordDto, club);
-        return ResponseEntity.ok().body(clubService.registerClub(club));
+        return ResponseEntity.ok().body(clubService.registerClub1(club));
+    }
+
+    @PostMapping("/clubs")
+    public ResponseEntity<Club> saveClub2(@RequestBody ClubRecordDto dto) { // maneira utilizando método
+        return ResponseEntity.ok().body(clubService.registerClub2(dto));
     }
 
     @GetMapping("/clubs")
