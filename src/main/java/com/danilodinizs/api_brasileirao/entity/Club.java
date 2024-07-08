@@ -10,7 +10,6 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Builder
 @Table(name = "CLUB")
 public class Club implements Serializable {
     @Serial
@@ -29,6 +28,7 @@ public class Club implements Serializable {
     String stadium;
     @Column(length = 5, name = "full name abbreviation")
     String fullName;
+
 
 
 }

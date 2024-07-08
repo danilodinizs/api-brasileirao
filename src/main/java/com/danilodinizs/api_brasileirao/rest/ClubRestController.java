@@ -6,6 +6,7 @@ import com.danilodinizs.api_brasileirao.service.ClubService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,19 +21,19 @@ public class ClubRestController {
 
     @PostMapping("/clubs")
     public ResponseEntity<Club> saveClub1(@RequestBody ClubRecordDto clubRecordDto) {  // maneira utilizando bean
-        var club = new Club();
+        Club club = new Club();
         BeanUtils.copyProperties(clubRecordDto, club);
         return ResponseEntity.ok().body(clubService.registerClub1(club));
     }
 
-    @PostMapping("/clubs")
-    public ResponseEntity<Club> saveClub2(@RequestBody ClubRecordDto dto) { // maneira utilizando método
-        return ResponseEntity.ok().body(clubService.registerClub2(dto));
-    }
+//    @PostMapping("/clubs")
+//    public ResponseEntity<Club> saveClub2(@RequestBody ClubRecordDto dto) { // maneira utilizando método
+//        return ResponseEntity.ok().body(clubService.registerClub2(dto));
+//    }
 
     @GetMapping("/clubs")
-    public ResponseEntity<List<Club>> getClubs() {
-        return ResponseEntity.ok().body(clubService.listAllClubs());
+    public ResponseEntity<List<ClubRecordDto>> getClubs() {
+        return ResponseEntity.status(HttpStatus.OK).body(clubService.listAllClubs());
     }
 
     @GetMapping("/clubs/{id}")
