@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -32,12 +33,16 @@ public class ClubRestController {
 //    }
 
     @GetMapping("/clubs")
-    public ResponseEntity<List<ClubRecordDto>> getClubs() {
-        return ResponseEntity.status(HttpStatus.OK).body(clubService.listAllClubs());
+    public ResponseEntity<List<Club>> getClubs() {
+        List<Club> listClubs = clubService.listAllClubs();
+        return ResponseEntity.status(HttpStatus.OK).body(listClubs);
     }
 
     @GetMapping("/clubs/{id}")
     public ResponseEntity<Object> getClub(@PathVariable(value = "id") UUID id) {
-        return ResponseEntity.ok().body(clubService.findClub(id));
+        Optional<Club> club = Optional.ofNullable(clubService.findClub(id));
+        if (club.isPresent()) return ResponseEntity.ok().body(club.get());
+        else ResponseEntity.status(HttpStatus.NOT_FOUND);
+        return null;
     }
 }

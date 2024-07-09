@@ -33,14 +33,10 @@ public class ClubService {
         return club;
     }
 
-    public List<ClubRecordDto> listAllClubs() {
+    public List<Club> listAllClubs() {
         // return clubRepository.findAll().stream().map(this::toDto).collect(Collectors.toList());
-        List<ClubRecordDto> clubsDto = new ArrayList<>();
-        List<Club> all = clubRepository.findAll();
-        all.forEach(club -> {
-            clubsDto.add(toDto(club));
-        });
-        return clubsDto;
+
+        return clubRepository.findAll();
     }
 
     private ClubRecordDto toDto(Club club) {
