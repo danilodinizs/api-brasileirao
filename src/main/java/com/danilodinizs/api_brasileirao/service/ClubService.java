@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,7 @@ public class ClubService {
                 .build();
     }
 
-    public Club findClub(UUID id) {
-        return clubRepository.findById(id).get();
+    public Optional<Club> findClub(UUID id) {
+        return clubRepository.findById(id);
     }
 }

@@ -2,6 +2,7 @@ package com.danilodinizs.api_brasileirao.rest;
 
 import com.danilodinizs.api_brasileirao.dto.ClubRecordDto;
 import com.danilodinizs.api_brasileirao.entity.Club;
+import com.danilodinizs.api_brasileirao.repository.ClubRepository;
 import com.danilodinizs.api_brasileirao.service.ClubService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
@@ -20,6 +21,8 @@ public class ClubRestController {
     @Autowired
     private ClubService clubService;
 
+    @Autowired
+    private ClubRepository clubRepository;
     @PostMapping("/clubs")
     public ResponseEntity<Club> saveClub1(@RequestBody ClubRecordDto clubRecordDto) {  // maneira utilizando bean
         Club club = new Club();
@@ -40,9 +43,8 @@ public class ClubRestController {
 
     @GetMapping("/clubs/{id}")
     public ResponseEntity<Object> getClub(@PathVariable(value = "id") UUID id) {
-        Optional<Club> club = Optional.ofNullable(clubService.findClub(id));
-        if (club.isPresent()) return ResponseEntity.ok().body(club.get());
-        else ResponseEntity.status(HttpStatus.NOT_FOUND);
-        return null;
+        Optional<Club> club = clubService.findClub(id);
+        if (club.isEmpty()) ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+        return ResponseEntity.ok().body(club);
     }
 }
