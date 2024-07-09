@@ -52,23 +52,22 @@ public class MatchService {
                     System.out.println("Time  1 null");
                 }
                 matches.add(createMatch(matchDate, round, clubHome, clubAway));
-                matchDate = matchDate.plusDays(7);
+
             }
+            matchDate = matchDate.plusDays(7);
             //Gira os clubs no sentido horário, mantendo o primeiro no lugar
             clubs.add(1, clubs.removeLast());
         }
-
-        matches.forEach(System.out::println);
-
         matchRepository.saveAll(matches);
 
-        List<Match> matches2 = new ArrayList<>();
+       List<Match> matches2 = new ArrayList<>();
 
-        matches.forEach(match -> {
+        for(Match match : matches) {
             Club clubHome = match.getAwayClub();
             Club clubAway = match.getHomeClub();
-            matches2.add(createMatch(match.getDate().plusDays(7L * matches.size()), match.getRound() + matches.size(), clubHome, clubAway));
-        });
+            matches2.add(createMatch(match.getDate().plusDays(133), match.getRound() + 19, clubHome, clubAway));
+        }
+
         matchRepository.saveAll(matches2);
     }
     private Match createMatch(LocalDateTime dataJogo, Integer rodada, Club clubHome, Club clubAway) {

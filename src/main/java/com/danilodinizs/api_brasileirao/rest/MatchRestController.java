@@ -20,7 +20,7 @@ public class MatchRestController {
     public MatchService matchService;
     @PostMapping("/matches/create-matches")
     public ResponseEntity<Void> createMatches() {
-        matchService.createMatches(LocalDateTime.now());
+        matchService.createMatches(LocalDateTime.of(2024, 4, 13, 16,0));
         return ResponseEntity.ok().build();
     }
 
