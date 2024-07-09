@@ -1,17 +1,18 @@
 package com.danilodinizs.api_brasileirao.rest;
 
+import com.danilodinizs.api_brasileirao.dto.MatchRecordDto;
 import com.danilodinizs.api_brasileirao.entity.Match;
 import com.danilodinizs.api_brasileirao.service.MatchService;
-import io.swagger.models.Response;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class MatchRestController {
@@ -29,4 +30,19 @@ public class MatchRestController {
         List<Match> listMatches = matchService.listAllMatches();
         return ResponseEntity.ok().body(listMatches);
     }
+
+    @PostMapping("/finish/{id}")
+    public ResponseEntity<Optional<Match>> finishMatch(@PathVariable (value = "id") UUID id, @RequestBody MatchRecordDto matchRecordDto) {
+        Match match = new Match();
+        BeanUtils.copyProperties(matchRecordDto, match);
+        return ResponseEntity.ok().body(matchService.finishMatch(id, match));
+    }
+
+    @GetMapping("/matches/{id}")
+    public ResponseEntity<Optional<Match>> findMatch(@PathVariable (value = "id") UUID id) {
+        Optional<Match> match = matchService.findMatch(id);
+        if(match.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.ok().body(match);
+    }
+
 }

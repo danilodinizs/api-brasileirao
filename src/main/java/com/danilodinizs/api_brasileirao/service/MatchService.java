@@ -2,15 +2,15 @@ package com.danilodinizs.api_brasileirao.service;
 
 import com.danilodinizs.api_brasileirao.entity.Club;
 import com.danilodinizs.api_brasileirao.entity.Match;
-import com.danilodinizs.api_brasileirao.repository.ClubRepository;
 import com.danilodinizs.api_brasileirao.repository.MatchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class MatchService {
@@ -83,7 +83,20 @@ public class MatchService {
         return match;
     }
 
-    public List<Match> listAllMatches() {
-        return matchRepository.findAll();
+    public List<Match> listAllMatches() { return matchRepository.findAll(); }
+
+    public Optional<Match> findMatch(UUID id) { return matchRepository.findById(id); }
+
+    public Optional<Match> finishMatch(UUID id, Match match) {
+        Optional<Match> optionalMatch = matchRepository.findById(id);
+        if (optionalMatch.isEmpty()) {
+           throw new IllegalArgumentException("This match does not exist");
+        }
+        Match matchvar = optionalMatch.get();
+        matchvar.setGoalsAway(match.getGoalsAway());
+        matchvar.setGoalsHome(match.getGoalsHome());
+        matchvar.setFinished(true);
+        matchvar.setAudiencePresent(match.getAudiencePresent());
+        return Optional.of(matchRepository.save(matchvar));
     }
 }
