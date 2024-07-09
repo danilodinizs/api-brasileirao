@@ -3,16 +3,12 @@ package com.danilodinizs.api_brasileirao.service;
 import com.danilodinizs.api_brasileirao.dto.ClubRecordDto;
 import com.danilodinizs.api_brasileirao.entity.Club;
 import com.danilodinizs.api_brasileirao.repository.ClubRepository;
-import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class ClubService {
@@ -21,8 +17,7 @@ public class ClubService {
     private ClubRepository clubRepository;
 
     public Club registerClub1(Club club) { return clubRepository.save(club); } // maneira utilizando o bean
-    public Club registerClub2(ClubRecordDto dto) {
-        return clubRepository.save(toEntity(dto)); } // maneira utilizando um método
+    public Club registerClub2(ClubRecordDto dto) { return clubRepository.save(toEntity(dto)); } // maneira utilizando um método
 
     private Club toEntity(ClubRecordDto dto) {
         Club club = new Club();
@@ -36,7 +31,6 @@ public class ClubService {
 
     public List<Club> listAllClubs() {
         // return clubRepository.findAll().stream().map(this::toDto).collect(Collectors.toList());
-
         return clubRepository.findAll();
     }
 
@@ -53,5 +47,9 @@ public class ClubService {
 
     public Optional<Club> findClub(UUID id) {
         return clubRepository.findById(id);
+    }
+
+    public Club updateClub(Club club) {
+        return clubRepository.save(club);
     }
 }

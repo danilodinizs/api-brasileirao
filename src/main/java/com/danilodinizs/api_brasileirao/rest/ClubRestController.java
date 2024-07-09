@@ -21,8 +21,6 @@ public class ClubRestController {
     @Autowired
     private ClubService clubService;
 
-    @Autowired
-    private ClubRepository clubRepository;
     @PostMapping("/clubs")
     public ResponseEntity<Club> saveClub1(@RequestBody ClubRecordDto clubRecordDto) {  // maneira utilizando bean
         Club club = new Club();
@@ -46,5 +44,17 @@ public class ClubRestController {
         Optional<Club> club = clubService.findClub(id);
         if (club.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Club not found.");
         return ResponseEntity.ok().body(club);
+    }
+
+    @PutMapping("/clubs/{id}")
+    public ResponseEntity<Object> updateClub(@PathVariable(value = "id")UUID id,
+                                                @RequestBody ClubRecordDto clubDto) {
+        Optional<Club> club = clubService.findClub(id);
+        if(club.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Club not found.");
+        }
+        var clubAtt = club.get();
+        BeanUtils.copyProperties(clubDto, clubAtt);
+        return ResponseEntity.status(HttpStatus.OK).body(clubService.updateClub(clubAtt));
     }
 }
