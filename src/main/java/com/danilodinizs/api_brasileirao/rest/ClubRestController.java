@@ -44,7 +44,7 @@ public class ClubRestController {
     @GetMapping("/clubs/{id}")
     public ResponseEntity<Object> getClub(@PathVariable(value = "id") UUID id) {
         Optional<Club> club = clubService.findClub(id);
-        if (club.isEmpty()) ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+        if (club.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Club not found.");
         return ResponseEntity.ok().body(club);
     }
 }
