@@ -2,6 +2,7 @@ package com.danilodinizs.api_brasileirao.rest;
 
 import com.danilodinizs.api_brasileirao.dto.FinishedMatchRecordDto;
 import com.danilodinizs.api_brasileirao.dto.MatchRecordDto;
+import com.danilodinizs.api_brasileirao.dto.StandingsDto;
 import com.danilodinizs.api_brasileirao.entity.Match;
 import com.danilodinizs.api_brasileirao.service.MatchService;
 import org.springframework.beans.BeanUtils;
@@ -46,4 +47,8 @@ public class MatchRestController {
         return ResponseEntity.ok().body(match);
     }
 
+    @GetMapping("/standing")
+    public ResponseEntity<StandingsDto> standing() {
+        return ResponseEntity.ok().body(matchService.getStandings());
+    }
 }

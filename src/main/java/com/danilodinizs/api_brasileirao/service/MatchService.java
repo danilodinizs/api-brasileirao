@@ -1,17 +1,17 @@
 package com.danilodinizs.api_brasileirao.service;
 
+import com.danilodinizs.api_brasileirao.dto.StandingsClubDto;
 import com.danilodinizs.api_brasileirao.dto.StandingsDto;
 import com.danilodinizs.api_brasileirao.entity.Club;
 import com.danilodinizs.api_brasileirao.entity.Match;
 import com.danilodinizs.api_brasileirao.repository.MatchRepository;
+import org.hibernate.annotations.CollectionId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
@@ -103,11 +103,12 @@ public class MatchService {
     }
 
     public StandingsDto getStandings() {
+
         StandingsDto standingsDto = new StandingsDto();
         List<Club> clubs = clubService.listAllClubs();
         clubs.forEach(club -> {
-            List<Match> homeMatches = matchRepository.findHomeClubAndFinished(club, true);
-            List<Match> awayMatches = matchRepository.findAwayClubAndFinished(club, true);
+            List<Match> homeMatches = matchRepository.findByHomeClubAndFinished(club, true);
+            List<Match> awayMatches = matchRepository.findByAwayClubAndFinished(club, true);
 
             AtomicReference<Integer> win = new AtomicReference<>(0);
             AtomicReference<Integer> draw = new AtomicReference<>(0);
@@ -130,7 +131,27 @@ public class MatchService {
                 golsContra.updateAndGet(v -> v + match.getGoalsAway());
             });
 
+            StandingsClubDto standing =  new StandingsClubDto();
+            standing.setClubId(club.getClubId());
+            standing.setClub(club.getName());
+            standing.setLoses(loses.get());
+            standing.setDraws(draw.get());
+            standing.setWins(win.get());
+            standing.setPoints((win.get() * 3) + draw.get());
+            standing.setMatches(win.get() + draw.get() + loses.get());
+            standing.setGolsPro(golsPro.get());
+            standing.setGolsContra(golsContra.get());
+
+            standingsDto.getStandingClubs().add(standing);
         });
+
+        Collections.sort(standingsDto.getStandingClubs(), Collections.reverseOrder());
+        int position = 1;
+        for (StandingsClubDto club : standingsDto.getStandingClubs()) {
+            club.setPosition(position++);
+        }
+
+
         return standingsDto;
     }
 }

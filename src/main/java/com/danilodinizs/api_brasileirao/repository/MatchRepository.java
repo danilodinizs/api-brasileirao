@@ -11,6 +11,6 @@ import java.util.UUID;
 @Repository
 public interface MatchRepository extends JpaRepository<Match, UUID> {
 
-    List<Match> findHomeClubAndFinished(Club clubHome, Boolean finished);
-    List<Match> findAwayClubAndFinished(Club clubHome, Boolean finished);
+    List<Match> findByHomeClubAndFinished(Club homeClub, Boolean finished);
+    List<Match> findByAwayClubAndFinished(Club awayClub, Boolean finished);
 }
