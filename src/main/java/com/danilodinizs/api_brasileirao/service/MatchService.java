@@ -1,5 +1,6 @@
 package com.danilodinizs.api_brasileirao.service;
 
+import com.danilodinizs.api_brasileirao.dto.StandingsDto;
 import com.danilodinizs.api_brasileirao.entity.Club;
 import com.danilodinizs.api_brasileirao.entity.Match;
 import com.danilodinizs.api_brasileirao.repository.MatchRepository;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class MatchService {
@@ -95,8 +97,40 @@ public class MatchService {
         Match matchvar = optionalMatch.get();
         matchvar.setGoalsAway(match.getGoalsAway());
         matchvar.setGoalsHome(match.getGoalsHome());
-        matchvar.setFinished(true);
         matchvar.setAudiencePresent(match.getAudiencePresent());
+        matchvar.setFinished(true);
         return Optional.of(matchRepository.save(matchvar));
+    }
+
+    public StandingsDto getStandings() {
+        StandingsDto standingsDto = new StandingsDto();
+        List<Club> clubs = clubService.listAllClubs();
+        clubs.forEach(club -> {
+            List<Match> homeMatches = matchRepository.findHomeClubAndFinished(club, true);
+            List<Match> awayMatches = matchRepository.findAwayClubAndFinished(club, true);
+
+            AtomicReference<Integer> win = new AtomicReference<>(0);
+            AtomicReference<Integer> draw = new AtomicReference<>(0);
+            AtomicReference<Integer> loses = new AtomicReference<>(0);
+            AtomicReference<Integer> golsPro = new AtomicReference<>(0);
+            AtomicReference<Integer> golsContra = new AtomicReference<>(0);
+
+            homeMatches.forEach(match -> {
+                if (match.getGoalsHome() > match.getGoalsAway()) win.getAndSet(win.get() + 1);
+                else if (match.getGoalsHome() < match.getGoalsAway()) loses.getAndSet(loses.get() + 1);
+                else draw.getAndSet(draw.get() + 1);
+                golsPro.updateAndGet(v -> v + match.getGoalsHome());
+                golsContra.updateAndGet(v -> v + match.getGoalsAway());
+            });
+            awayMatches.forEach(match -> {
+                if (match.getGoalsHome() < match.getGoalsAway()) win.getAndSet(win.get() + 1);
+                else if (match.getGoalsHome() > match.getGoalsAway()) loses.getAndSet(loses.get() + 1);
+                else draw.getAndSet(draw.get() + 1);
+                golsPro.updateAndGet(v -> v + match.getGoalsHome());
+                golsContra.updateAndGet(v -> v + match.getGoalsAway());
+            });
+
+        });
+        return standingsDto;
     }
 }
