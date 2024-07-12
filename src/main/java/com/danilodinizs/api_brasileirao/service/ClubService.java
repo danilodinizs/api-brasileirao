@@ -22,7 +22,7 @@ public class ClubService {
     private Club toEntity(ClubRecordDto dto) {
         Club club = new Club();
         club.setName(dto.name());
-        club.setName(dto.acronym());
+        club.setAcronym(dto.acronym());
         club.setState(dto.state());
         club.setStadium(dto.stadium());
         club.setFullName(dto.fullName());
