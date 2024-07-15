@@ -9,14 +9,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import java.util.UUID;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static jakarta.persistence.GenerationType.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ClubServiceTest {
@@ -31,9 +30,12 @@ public class ClubServiceTest {
 
     List<Club> clubs;
 
+    UUID clubId = java.util.UUID.randomUUID();
+
     @BeforeEach
     public void setup() {
         club1 = new Club();
+        club1.setClubId(clubId);
         club1.setName("Flamengo");
         club1.setAcronym("FLA");
         club1.setState("RJ");
@@ -59,6 +61,22 @@ public class ClubServiceTest {
 
     @Test
     void mustReturnOneClubByIdSuccessfully() {
-        when(clubRepository.findById(club1.getClubId())).thenReturn(club1)
+        when(clubRepository.findById(club1.getClubId())).thenReturn(Optional.of(club1));
+        Optional<Club> result = service.findClub(club1.getClubId());
+        assertEquals(club1, result.get());
+    }
+
+    @Test
+    void mustUpdateClubSuccessfully() {
+        when(clubRepository.save(any(Club.class))).thenReturn(club1);
+        Club result = service.updateClub(club1);
+        assertEquals(club1, result);
+    }
+
+    @Test
+    void mustRegisterClubSuccessfully() {
+        when(clubRepository.save(any(Club.class))).thenReturn(club1);
+        Club result = service.registerClub1(club1);
+        assertEquals(club1, result);
     }
 }
