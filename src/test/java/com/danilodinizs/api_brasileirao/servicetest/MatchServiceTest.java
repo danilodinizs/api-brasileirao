@@ -14,10 +14,7 @@ import com.danilodinizs.api_brasileirao.repository.MatchRepository;
 import com.danilodinizs.api_brasileirao.service.MatchService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -37,9 +34,9 @@ public class MatchServiceTest {
     @Mock
     MatchRepository matchRepository;
 
-    Match match1, match2;
+    Match match1, match2, match3;
     Club club1, club2;
-    UUID clubId;
+    UUID matchId = java.util.UUID.randomUUID();;
     LocalDateTime ldc;
 
     List<Match> matches;
@@ -48,6 +45,7 @@ public class MatchServiceTest {
     @BeforeEach
     public void setup() {
         match1 = new Match();
+        match1.setMatchId(matchId);
         match1.setHomeClub(match1.getHomeClub());
         match1.setAwayClub(match1.getAwayClub());
         match1.setRound(1);
@@ -58,6 +56,7 @@ public class MatchServiceTest {
         match1.setAudiencePresent(65000);
 
         match2 = new Match();
+        match2.setMatchId(matchId);
         match2.setHomeClub(match2.getHomeClub());
         match2.setAwayClub(match2.getAwayClub());
         match2.setRound(1);
@@ -66,6 +65,17 @@ public class MatchServiceTest {
         match2.setGoalsHome(1);
         match2.setGoalsAway(3);
         match2.setAudiencePresent(42000);
+
+        match3 = new Match();
+        match3.setMatchId(matchId);
+        match3.setHomeClub(match3.getHomeClub());
+        match3.setAwayClub(match3.getAwayClub());
+        match3.setRound(1);
+        match3.setDate(match3.getDate());
+        match3.setFinished(true);
+        match3.setGoalsHome(2);
+        match3.setGoalsAway(0);
+        match3.setAudiencePresent(12025);
 
         matches = Arrays.asList(match1, match2);
 
@@ -95,6 +105,19 @@ public class MatchServiceTest {
         matchService.createMatches(ldc);
 
         verify(matchRepository, times(2)).saveAll(anyList());
+    }
+
+    @Test
+    void mustFindMatchByIdSuccessfully() {
+        when(matchRepository.findById(match1.getMatchId())).thenReturn(Optional.of(match1));
+        Optional<Match> result = matchService.findMatch(match1.getMatchId());
+        assertEquals(match1, result.get());
+
+    }
+
+    @Test
+    void mustFinishMatchByIdAndMatch() {
+
     }
 
 }
